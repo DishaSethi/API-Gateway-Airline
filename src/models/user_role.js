@@ -2,8 +2,11 @@
 const {
   Model
 } = require('sequelize');
+
+const { Enums } = require('../utils/common');
+const { ADMIN, CUSTOMER, FLIGHT_COMPANY } = Enums.USER_ROLES_ENUMS;
 module.exports = (sequelize, DataTypes) => {
-  class User_Role extends Model {
+  class Role extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,19 +14,20 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.belongsToMany(models.User, {through: 'User_Roles', as: 'user'});
     }
   }
-  User_Role.init({
-    userId: {
-      type:DataTypes.INTEGER,
-    allowNull:false},
-    roleId: {
-      type:DataTypes.INTEGER,
-      alllowNull:false
+  Role.init({
+    name: {
+      type: DataTypes.ENUM({
+        values: [ADMIN, CUSTOMER, FLIGHT_COMPANY]
+      }),
+      allowNull: false,
+      defaultValue: CUSTOMER
     }
   }, {
     sequelize,
-    modelName: 'User_Role',
+    modelName: 'Role',
   });
-  return User_Role;
+  return Role;
 };

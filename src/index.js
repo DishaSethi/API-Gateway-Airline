@@ -8,7 +8,7 @@ const app = express();
 
 const limiter=rateLimit({
     windowMs:2*60*1000,
-    max:3
+    max:30
 });
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));

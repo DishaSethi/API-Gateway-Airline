@@ -1,8 +1,9 @@
-const { StatusCodes } = require('http-status-codes');
+const { StatusCodes, UNAUTHORIZED } = require('http-status-codes');
 
 const { ErrorResponse } = require('../utils/common');
 const AppError = require('../utils/errors/app-error');
 const { UserService } = require('../services');
+const { message } = require('../utils/common/error-response');
 
 function validateAuthRequest(req, res, next) {
     if(!req.body.email) {
@@ -22,24 +23,33 @@ function validateAuthRequest(req, res, next) {
     next();
 }
 
-async function checkAuth(req,res,next){
+async function checkAuth(req, res, next) {
     try {
-        const response=await UserService.isAuthenticated(req.headers['x-access-token']);
-        if(response){
-            req.user=response;
+        const response = await UserService.isAuthenticated(req.headers['x-access-token']);
+        if(response) {
+            req.user = response; // setting the user id in the req object
             next();
         }
-    } catch (error) {
-        console.log(error);
+    } catch(error) {
         return res
-        .status(error.statusCode)
-        .json(error);
-        
+                .status(error.statusCode)
+                .json(error);
     }
-
-
+    
 }
+
+async function isAdmin(req, res, next) {
+    const response = await UserService.isAdmin(req.user);
+    if(!response) {
+        return res
+                .status(StatusCodes.UNAUTHORIZED)
+                .json({message: 'User not authorized for this action'});
+    }
+    next();
+}
+
 module.exports={
     validateAuthRequest,
-    checkAuth
+    checkAuth,
+    isAdmin
 }
