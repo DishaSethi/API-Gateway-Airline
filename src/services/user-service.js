@@ -92,7 +92,7 @@ async function addRoleToUser(data) {
 //         if(!user) {
 //             throw new AppError('No user found for the given id', StatusCodes.NOT_FOUND);
 //         }
-//         const adminrole = await roleRepo.getRoleByName(Enums.USER_ROLES_ENUMS.ADMIN);
+//         ccdonst adminrole = await roleRepo.getRoleByName(Enums.USER_ROLES_ENUMS.ADMIN);
 //         if(!adminrole) {
 //             throw new AppError('No user found for the given role', StatusCodes.NOT_FOUND);
 //         }
